@@ -1,4 +1,4 @@
-package com.niebo.quemus.models;
+package com.niebo.quemus.models.spotify;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TrackObject {
+public class Song {
     private Album album;
     private List<SimplifiedArtistObject> artists;
     private List<String> avaliable_markets;

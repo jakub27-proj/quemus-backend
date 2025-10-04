@@ -1,4 +1,4 @@
-package com.niebo.quemus.models;
+package com.niebo.quemus.models.spotify;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

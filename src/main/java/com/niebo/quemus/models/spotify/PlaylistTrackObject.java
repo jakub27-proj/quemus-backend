@@ -1,4 +1,4 @@
-package com.niebo.quemus.models;
+package com.niebo.quemus.models.spotify;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,6 +13,6 @@ public class PlaylistTrackObject {
     private String added_at;
     private String added_by;
     private boolean is_local;
-    private TrackObject trackObject;
-
+    private Song trackObject;
+    
 }
