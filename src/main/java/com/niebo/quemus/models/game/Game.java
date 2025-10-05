@@ -59,9 +59,30 @@ public class Game {
     }
 
     public void setFirstSongForPlayers(){
-        List<PlaylistTrackObject> tracks = playlist.getTracks().getItems();
+        List<PlaylistTrackObject> listOfSongs = playlist.getTracks().getItems();
         for(Player player: players){
-            player.getSongsList().add(tracks.remove(random.nextInt(tracks.size())).getTrackObject());
+            player.getSongsList().add(listOfSongs.remove(random.nextInt(listOfSongs.size())).getTrackObject());
         }
+    }
+
+    public Song newCurrentSong(){
+         List<PlaylistTrackObject> listOfSongs = this.playlist.getTracks().getItems();
+        if (listOfSongs.isEmpty()) return null;
+        return listOfSongs.remove(random.nextInt(listOfSongs.size())).getTrackObject();
+    }
+
+    public boolean checkGuess(int index, long player_ID){
+        Player currentPlayer = null;
+        for(Player player: this.players){
+            if(player.getId() == player_ID){
+                currentPlayer = player;
+                break;
+            }
+        }
+        return checkDatesOfCreation(currentPlayer);
+    }
+
+    private boolean checkDatesOfCreation(Player player){
+        return true;
     }
 }
