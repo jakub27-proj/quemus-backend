@@ -18,5 +18,18 @@ public class Player {
     private long id;
     private int points;
     private List<Song> songsList;
-    private int specialTokens;
+    private int specialTokens = 2;
+    private boolean hasTurn = false;
+
+    public void addSpecialToken(){
+        specialTokens++;
+    }
+    
+    public boolean deleteSpecialToken(){
+        if (specialTokens < 1){
+            return false;
+        }
+        specialTokens--;
+        return true;
+    }
 }
