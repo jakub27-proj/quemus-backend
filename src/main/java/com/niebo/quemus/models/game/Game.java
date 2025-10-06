@@ -6,23 +6,26 @@ import java.util.Random;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.niebo.quemus.models.spotify.Playlist;
 import com.niebo.quemus.models.spotify.PlaylistTrackObject;
+import com.niebo.quemus.models.spotify.SimplifiedArtistObject;
 import com.niebo.quemus.models.spotify.Song;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class Game {
     private long game_ID;
     private List<Player> players;
     private int turnsLeft;
     private Playlist playlist;
-    private Song currentSong;
+    private PlaylistTrackObject currentSong;
     private boolean hasStarted = false;
     private boolean isOnline;
     private boolean canJoin = true;
@@ -35,8 +38,8 @@ public class Game {
         this.isOnline = isOnline;
     }
 
-    public void addPlayer(Player player){
-        this.players.add(player);
+    public void addPlayer(long id){
+        this.players.add(new Player(id));
     }
     
     public void startGame(){
@@ -61,17 +64,19 @@ public class Game {
     public void setFirstSongForPlayers(){
         List<PlaylistTrackObject> listOfSongs = playlist.getTracks().getItems();
         for(Player player: players){
-            player.getSongsList().add(listOfSongs.remove(random.nextInt(listOfSongs.size())).getTrackObject());
+            player.getSongsList().add(listOfSongs.remove(random.nextInt(listOfSongs.size())));
         }
     }
 
     public Song newCurrentSong(){
          List<PlaylistTrackObject> listOfSongs = this.playlist.getTracks().getItems();
         if (listOfSongs.isEmpty()) return null;
-        return listOfSongs.remove(random.nextInt(listOfSongs.size())).getTrackObject();
+        PlaylistTrackObject playlistTrackObject = listOfSongs.remove(random.nextInt(listOfSongs.size()));
+        this.currentSong = playlistTrackObject;
+        return playlistTrackObject.getTrackObject();
     }
 
-    public boolean checkGuess(int index, long player_ID){
+    public Player findPlayerByID(long player_ID){
         Player currentPlayer = null;
         for(Player player: this.players){
             if(player.getId() == player_ID){
@@ -79,10 +84,54 @@ public class Game {
                 break;
             }
         }
-        return checkDatesOfCreation(currentPlayer);
+        return currentPlayer;
     }
 
-    private boolean checkDatesOfCreation(Player player){
+    public boolean checkDatesOfCreation(int index, Player player){
+        List<PlaylistTrackObject> playlistTrackObjects = player.getSongsList();
+        this.turnsLeft--;
+        int currYear = getReleaseYear(currentSong.getTrackObject().getAlbum().release_date());
+        if(index > 0){
+            PlaylistTrackObject ptoLeft = playlistTrackObjects.get(index - 1);
+            int leftYear = getReleaseYear(ptoLeft.getTrackObject().getAlbum().release_date());
+           if (leftYear > currYear) return false;
+        }
+        if (index != playlistTrackObjects.size() - 1){
+            PlaylistTrackObject ptoRight = playlistTrackObjects.get(index + 1);
+            int rightYear = getReleaseYear(ptoRight.getTrackObject().getAlbum().release_date());
+            if (currYear > rightYear) return false;
+        }
+        playlistTrackObjects.add(index, this.currentSong);
+        player.addPoint();
         return true;
+    }
+
+    private int getReleaseYear(String date){
+        log.debug(date);
+        return Integer.parseInt(date.substring(0, 4));
+    }
+
+    public boolean checkArtistName(String guess, long player_ID){
+        Player p = findPlayerByID(player_ID);
+        guess = guess.toLowerCase();
+        List<SimplifiedArtistObject> artists = currentSong.getTrackObject().getArtists();
+        for (SimplifiedArtistObject aritist: artists){
+            String name = aritist.getName();
+            if(guess.equals(name)){
+                p.addSpecialToken();
+                return true;
+            } 
+        }
+        return false;
+    }
+
+    public boolean checkTitle(String guess, long player_ID){
+        Player p = findPlayerByID(player_ID);
+        guess = guess.toLowerCase();
+        if (guess.equals(currentSong.getTrackObject().getName())){
+            p.addSpecialToken();
+            return true;
+        } 
+        return false;
     }
 }

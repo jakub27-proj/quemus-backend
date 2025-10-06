@@ -1,8 +1,9 @@
 package com.niebo.quemus.models.game;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import com.niebo.quemus.models.spotify.Song;
+import com.niebo.quemus.models.spotify.PlaylistTrackObject;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,11 +17,14 @@ import lombok.Setter;
 
 public class Player {
     private long id;
-    private int points;
-    private List<Song> songsList;
+    private int points = 0;
+    private List<PlaylistTrackObject> songsList = new ArrayList<>();
     private int specialTokens = 2;
     private boolean hasTurn = false;
 
+    public Player(long id){
+        this.id = id;
+    }
     public void addSpecialToken(){
         specialTokens++;
     }
@@ -31,5 +35,9 @@ public class Player {
         }
         specialTokens--;
         return true;
+    }
+
+    public void addPoint(){
+        this.points++;
     }
 }
