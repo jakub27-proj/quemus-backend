@@ -9,6 +9,7 @@ import com.niebo.quemus.models.spotify.PlaylistTrackObject;
 import com.niebo.quemus.models.spotify.SimplifiedArtistObject;
 import com.niebo.quemus.models.spotify.Song;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 @NoArgsConstructor
 @Slf4j
+@Schema(description= "Model which represents game instance")
 public class Game {
     private long game_ID;
     private List<Player> players;

@@ -63,5 +63,4 @@ public class GameService {
         Game currentGame = activeGames.get(game_ID); 
         return currentGame.checkTitle(title, player_ID);
     }
-
 }

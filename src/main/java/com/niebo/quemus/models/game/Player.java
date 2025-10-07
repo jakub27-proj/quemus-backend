@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.niebo.quemus.models.spotify.PlaylistTrackObject;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 
+@Schema(description= "Model which represents player of the game")
 public class Player {
     private long id;
     private int points = 0;

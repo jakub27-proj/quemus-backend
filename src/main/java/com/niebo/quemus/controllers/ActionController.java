@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.niebo.quemus.models.game.Game;
 import com.niebo.quemus.models.spotify.Song;
 import com.niebo.quemus.services.GameService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
+@Tag(name= "Game", description= "Operations on started Game instances")
 public class ActionController {
     @Autowired
     private GameService gameService;

@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.niebo.quemus.models.game.Game;
 import com.niebo.quemus.services.GameService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
+@Tag(name = "Game", description = "Operations on not started instances of Game and basic operations")
 public class GameController {
     @Autowired
     private GameService gameService;

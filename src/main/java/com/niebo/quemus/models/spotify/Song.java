@@ -7,10 +7,13 @@ import lombok.Setter;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "Model which corresponds to the Spotify Web API")
 public class Song {
     private Album album;
     private List<SimplifiedArtistObject> artists;

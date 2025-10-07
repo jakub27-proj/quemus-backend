@@ -1,6 +1,9 @@
 package com.niebo.quemus.models.spotify;
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "Model which corresponds to the Spotify Web API")
 public record Album(
         String album_type,
         int total_tracks,
