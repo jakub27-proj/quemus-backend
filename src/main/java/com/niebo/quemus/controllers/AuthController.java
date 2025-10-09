@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RequestMapping("/api/auth")
 @RestController
-@Tag(name="Spotify Authentication", description = "Login to spotify Account")
+@Tag(name="Auth Controller", description = "Login to spotify Account")
 public class AuthController {
     @Value("${spotify.client-id}")
     private String clientId;

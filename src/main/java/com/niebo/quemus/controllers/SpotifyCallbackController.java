@@ -26,7 +26,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/auth")
-@Tag(name = "Spotify Authentication", description = "Endpoints for Spotify OAuth2 login and token handling")
+@Tag(name = "Spotify Callback Controller", description = "Endpoints for Spotify OAuth2 login and token handling")
 public class SpotifyCallbackController {
 
     @Value("${spotify.client-id}")

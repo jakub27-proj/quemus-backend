@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/action")
-@Tag(name= "Game", description= "Operations on started Game instances")
+@Tag(name= "Action Controller", description= "Operations on started Game instances")
 public class ActionController {
     @Autowired
     private GameService gameService;
