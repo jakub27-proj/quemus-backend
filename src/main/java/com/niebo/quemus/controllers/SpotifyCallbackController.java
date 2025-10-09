@@ -38,7 +38,7 @@ public class SpotifyCallbackController {
     @Value("${spotify.redirect-uri}")
     private String redirectUri;
 
-    @Value("${frontend-url}")
+    @Value("${frontend_url}")
     private String frontendUrl;
 
     @GetMapping("/callback")
