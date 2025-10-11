@@ -1,0 +1,22 @@
+{"properties": [
+  {
+    "name": "spotify.client-id",
+    "type": "java.lang.String",
+    "description": "The client-id of Spotify Web Api app"
+  },
+  {
+    "name": "spotify.client-secret",
+    "type": "java.lang.String",
+    "description": "Secret of Spotify Web Api app'"
+  },
+  {
+    "name": "spotify.redirect-uri",
+    "type": "java.lang.String",
+    "description": "Redirect Address after log in'"
+  },
+  {
+    "name": "frontend_url",
+    "type": "java.lang.String",
+    "description": "url of the frontend app"
+  }
+]}

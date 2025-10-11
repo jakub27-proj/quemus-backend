@@ -32,9 +32,10 @@ public class GameService {
         return currentGame;
     }
 
-    public Game startGame(long game_ID, String playlist_ID){
+    public Game startGame(long game_ID, String playlist_ID, String accessToken){
         Game currentGame = activeGames.get(game_ID);
-        currentGame.setPlaylist(webClient.get().uri("/playlists/" + playlist_ID).retrieve().bodyToMono(Playlist.class).block());
+        currentGame.setPlaylist(webClient.get().uri("/playlists/" + playlist_ID).header("Authorization", "Bearer " + accessToken)
+        .retrieve().bodyToMono(Playlist.class).block());
         currentGame.setCurrentPlayersTurn();
         currentGame.setTurnsLeft(currentGame.getTurnsLeft() * currentGame.getPlayers().size());
         if(currentGame.getPlaylist().getTracks().getItems().size() < currentGame.getTurnsLeft()){
