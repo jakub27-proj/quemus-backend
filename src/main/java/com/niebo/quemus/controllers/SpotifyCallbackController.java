@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/spotify")
 @Tag(name = "Spotify Callback Controller", description = "Endpoints for Spotify OAuth2 login and token handling")
 public class SpotifyCallbackController {
 
@@ -89,4 +89,5 @@ public class SpotifyCallbackController {
             .location(URI.create(frontendUrl))
             .build();
         }
+        //TODO:"Odświeżanie tokena"
 }
