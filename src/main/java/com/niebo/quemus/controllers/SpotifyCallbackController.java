@@ -21,8 +21,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
-
 
 @RestController
 @RequestMapping("/api/auth")
@@ -42,7 +40,7 @@ public class SpotifyCallbackController {
     private String frontendUrl;
 
     @GetMapping("/callback")
-    public ResponseEntity<Void> callback(@RequestParam("code") String code, HttpServletResponse response) throws IOException, InterruptedException {
+    public ResponseEntity<Void> callback(@RequestParam("code") String code) throws IOException, InterruptedException {
         var body = "grant_type=authorization_code" +
                 "&code=" + code +
                 "&redirect_uri=" + redirectUri +
@@ -64,7 +62,7 @@ public class SpotifyCallbackController {
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> map = mapper.readValue(
             tokenResponse.body(),
-             new TypeReference<Map<String, Object>>() {}
+             new TypeReference<>() {}
         );
         String accessToken = (String) map.get("access_token");
         String refreshToken = (String) map.get("refresh_token");
