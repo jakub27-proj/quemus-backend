@@ -22,11 +22,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 
 @RestController
 @RequestMapping("/api/spotify")
 @Tag(name = "Spotify Callback Controller", description = "Endpoints for Spotify OAuth2 login and token handling")
+@Slf4j
 public class SpotifyCallbackController {
 
     @Value("${spotify.client-id}")
@@ -68,6 +70,7 @@ public class SpotifyCallbackController {
         );
         String accessToken = (String) map.get("access_token");
         String refreshToken = (String) map.get("refresh_token");
+        log.info("Otrzymano tokeny");
 
         ResponseCookie accessCookie = ResponseCookie.from("spotify_access_token", accessToken)
         .httpOnly(true)
@@ -81,7 +84,7 @@ public class SpotifyCallbackController {
         .httpOnly(true)
         .secure(false)
         .path("/")
-        .maxAge(3600) 
+        .maxAge(86400) 
         .sameSite("Lax")
         .build();
 

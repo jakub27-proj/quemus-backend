@@ -40,8 +40,8 @@ public class Game {
         this.isOnline = isOnline;
     }
 
-    public void addPlayer(long id){
-        this.players.add(new Player(id));
+    public void addPlayer(long id, String name){
+        this.players.add(new Player(id, name));
     }
     
     public void startGame(){

@@ -26,9 +26,9 @@ public class GameService {
         return activeGames.put(id, new Game(isOnline, id++, turnsLeft));
     }
 
-    public Game joinGame(long player_ID, long game_ID){
+    public Game joinGame(long player_ID, long game_ID,String name){
         Game currentGame = activeGames.get(game_ID);
-        currentGame.addPlayer(player_ID);
+        currentGame.addPlayer(player_ID, name);
         return currentGame;
     }
 

@@ -22,6 +22,7 @@ public class WebSecurityConfig {
         cors.setAllowedOrigins(List.of(frontendUrl));
         cors.setAllowedHeaders(List.of("*"));
         cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        cors.setAllowCredentials(true);
         
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

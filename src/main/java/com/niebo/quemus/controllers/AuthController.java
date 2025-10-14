@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 
 
 @RequestMapping("/api/auth")
 @RestController
 @Tag(name="Auth Controller", description = "Login to spotify Account")
+@Slf4j
 public class AuthController {
     @Value("${spotify.client-id}")
     private String clientId;
@@ -43,6 +45,7 @@ public class AuthController {
     @GetMapping("/session")
     public ResponseEntity<Map<String, Boolean>> getSpotifySession(@CookieValue(value = "spotify_access_token", required = false) String accessToken) {
         boolean loggedIn = accessToken != null;
+        log.info("Logged in: " + loggedIn);
         return ResponseEntity.ok(Map.of("loggedIn", loggedIn));
     }
 }

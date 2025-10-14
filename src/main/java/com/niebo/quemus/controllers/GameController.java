@@ -31,7 +31,8 @@ public class GameController {
     }
 
     @GetMapping("/join")
-    public Game joinGame(@RequestParam(name = "player_ID") long player_ID, @RequestParam(name = "game_ID") long game_ID){
-        return gameService.joinGame(player_ID, game_ID);
+    public Game joinGame(@RequestParam(name = "player_ID") long player_ID, @RequestParam(name = "game_ID") long game_ID,
+    @RequestParam(name = "name") String name){
+        return gameService.joinGame(player_ID, game_ID, name);
     }
 }
