@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Model which corresponds to the Spotify Web API")
+
 public class Song {
     private Album album;
     private List<SimplifiedArtistObject> artists;
@@ -29,7 +30,6 @@ public class Song {
     private Restrictions restrictions;
     private String name;
     private int popularity;
-    private String preview_url;
     private int track_number;
     private String type;
     private String uri;

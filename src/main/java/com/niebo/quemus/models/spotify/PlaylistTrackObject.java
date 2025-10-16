@@ -13,8 +13,8 @@ import lombok.Setter;
 @Schema(description = "Model which corresponds to the Spotify Web API")
 public class PlaylistTrackObject {
     private String added_at;
-    private String added_by;
+    private PlaylistCreator added_by;
     private boolean is_local;
-    private Song trackObject;
+    private Song track;
     
 }

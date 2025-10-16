@@ -1,6 +1,8 @@
 package com.niebo.quemus.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,9 +13,11 @@ import com.niebo.quemus.models.game.Game;
 import com.niebo.quemus.services.GameService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/game")
+@Slf4j
 @Tag(name = "Game Controller", description = "Operations on not started instances of Game and basic operations")
 public class GameController {
     @Autowired
@@ -31,8 +35,14 @@ public class GameController {
     }
 
     @GetMapping("/join")
-    public Game joinGame(@RequestParam(name = "player_ID") long player_ID, @RequestParam(name = "game_ID") long game_ID,
-    @RequestParam(name = "name") String name){
-        return gameService.joinGame(player_ID, game_ID, name);
+    public Game joinGame(@RequestParam(name = "game_ID") long game_ID, @RequestParam(name = "name") String name){
+        return gameService.joinGame(game_ID, name);
     }
+
+    @PostMapping("/setplaylist")
+    public ResponseEntity<Game> startGame(@RequestParam(name = "playlist_ID") String playlist_ID,
+    @RequestParam(name = "game_ID") long game_ID, @CookieValue(name="spotify_access_token") String token){
+        return ResponseEntity.ok(gameService.setPlaylist(game_ID, playlist_ID, token));
+    }
+    
 }

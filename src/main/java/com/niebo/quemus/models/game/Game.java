@@ -1,5 +1,6 @@
 package com.niebo.quemus.models.game;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -24,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Schema(description= "Model which represents game instance")
 public class Game {
     private long game_ID;
-    private List<Player> players;
+    private List<Player> players = new ArrayList<>();
     private int turnsLeft;
     private Playlist playlist;
     private PlaylistTrackObject currentSong;
@@ -75,7 +76,7 @@ public class Game {
         if (listOfSongs.isEmpty()) return null;
         PlaylistTrackObject playlistTrackObject = listOfSongs.remove(random.nextInt(listOfSongs.size()));
         this.currentSong = playlistTrackObject;
-        return playlistTrackObject.getTrackObject();
+        return playlistTrackObject.getTrack();
     }
 
     public Player findPlayerByID(long player_ID){
@@ -92,15 +93,15 @@ public class Game {
     public boolean checkDatesOfCreation(int index, Player player){
         List<PlaylistTrackObject> playlistTrackObjects = player.getSongsList();
         this.turnsLeft--;
-        int currYear = getReleaseYear(currentSong.getTrackObject().getAlbum().release_date());
+        int currYear = getReleaseYear(currentSong.getTrack().getAlbum().release_date());
         if(index > 0){
             PlaylistTrackObject ptoLeft = playlistTrackObjects.get(index - 1);
-            int leftYear = getReleaseYear(ptoLeft.getTrackObject().getAlbum().release_date());
+            int leftYear = getReleaseYear(ptoLeft.getTrack().getAlbum().release_date());
            if (leftYear > currYear) return false;
         }
         if (index != playlistTrackObjects.size() - 1){
             PlaylistTrackObject ptoRight = playlistTrackObjects.get(index + 1);
-            int rightYear = getReleaseYear(ptoRight.getTrackObject().getAlbum().release_date());
+            int rightYear = getReleaseYear(ptoRight.getTrack().getAlbum().release_date());
             if (currYear > rightYear) return false;
         }
         playlistTrackObjects.add(index, this.currentSong);
@@ -116,7 +117,7 @@ public class Game {
     public boolean checkArtistName(String guess, long player_ID){
         Player p = findPlayerByID(player_ID);
         guess = guess.toLowerCase();
-        List<SimplifiedArtistObject> artists = currentSong.getTrackObject().getArtists();
+        List<SimplifiedArtistObject> artists = currentSong.getTrack().getArtists();
         for (SimplifiedArtistObject aritist: artists){
             String name = aritist.getName();
             if(guess.equals(name)){
@@ -130,10 +131,16 @@ public class Game {
     public boolean checkTitle(String guess, long player_ID){
         Player p = findPlayerByID(player_ID);
         guess = guess.toLowerCase();
-        if (guess.equals(currentSong.getTrackObject().getName())){
+        if (guess.equals(currentSong.getTrack().getName())){
             p.addSpecialToken();
             return true;
         } 
         return false;
+    }
+
+    @Override 
+    public String toString(){
+        return String.format("Game: ID: %d | Players: %d | HasStarted: %s | isOnline: %s ", 
+        this.game_ID, this.players.size(), this.hasStarted, this.isOnline);
     }
 }

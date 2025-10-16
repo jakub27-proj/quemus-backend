@@ -25,7 +25,7 @@ public class AuthController {
     private String clientId;
     @Value("${spotify.redirect-uri}")
     private String redirectUri;
-    @Value("${spotify.scopes:user-read-private,user-read-email}")
+    @Value("${spotify.scopes:user-read-private,user-read-email,playlist-read-private,playlist-read-collaborative}")
     private String scopes;
 
     @GetMapping("/login")

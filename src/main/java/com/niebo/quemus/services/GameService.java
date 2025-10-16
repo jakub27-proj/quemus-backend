@@ -2,6 +2,7 @@ package com.niebo.quemus.services;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,10 +12,14 @@ import com.niebo.quemus.models.game.Game;
 import com.niebo.quemus.models.spotify.Playlist;
 import com.niebo.quemus.models.spotify.Song;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class GameService {
     private final Map<Long, Game> activeGames = new HashMap<>();
-    private static long id = 0;
+    private static final AtomicLong gameID = new AtomicLong(0);
+    private static final AtomicLong playerID = new AtomicLong(0);
     @Autowired
     private WebClient webClient;
 
@@ -23,19 +28,28 @@ public class GameService {
     }
 
     public Game createNewGame(boolean isOnline, int turnsLeft){
-        return activeGames.put(id, new Game(isOnline, id++, turnsLeft));
+        Game game = new Game(isOnline, gameID.get(), turnsLeft);
+        log.info(game.toString());
+        activeGames.put(gameID.getAndAdd(1), game);
+        return game;
     }
 
-    public Game joinGame(long player_ID, long game_ID,String name){
+    public Game joinGame(long game_ID, String name){
         Game currentGame = activeGames.get(game_ID);
-        currentGame.addPlayer(player_ID, name);
+        log.info("Player:" + name);
+        currentGame.addPlayer(playerID.getAndAdd(1), name);
         return currentGame;
     }
 
-    public Game startGame(long game_ID, String playlist_ID, String accessToken){
+    public Game setPlaylist(long game_ID, String playlist_ID, String accessToken){
         Game currentGame = activeGames.get(game_ID);
-        currentGame.setPlaylist(webClient.get().uri("/playlists/" + playlist_ID).header("Authorization", "Bearer " + accessToken)
+        currentGame.setPlaylist(webClient.get().uri("/playlists/" + playlist_ID + "?market=PL").header("Authorization", "Bearer " + accessToken)
         .retrieve().bodyToMono(Playlist.class).block());
+        log.info("Playlist: " + currentGame.getPlaylist().getName());
+        return currentGame;
+    }
+    public Game startGame(long game_ID){
+        Game currentGame = activeGames.get(game_ID);
         currentGame.setCurrentPlayersTurn();
         currentGame.setTurnsLeft(currentGame.getTurnsLeft() * currentGame.getPlayers().size());
         if(currentGame.getPlaylist().getTracks().getItems().size() < currentGame.getTurnsLeft()){

@@ -2,7 +2,6 @@ package com.niebo.quemus.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,9 +21,8 @@ public class ActionController {
     private GameService gameService;
 
     @GetMapping("/start")
-    public ResponseEntity<Game> startGame(@RequestParam(name = "playlist_ID") String playlist_ID,
-     @RequestParam(name = "game_ID") long game_ID, @CookieValue(name="spotify_access_token") String token){
-       return ResponseEntity.ok(gameService.startGame(game_ID, playlist_ID, token));
+    public ResponseEntity<Game> startGame(@RequestParam(name = "game_ID") long game_ID){
+        return ResponseEntity.ok(gameService.startGame(game_ID));
     }
 
     @GetMapping("/setsong")
@@ -35,18 +33,18 @@ public class ActionController {
     @GetMapping("/check/song")
     public boolean checkSongPlacement(@RequestParam(name = "game_ID") long game_ID, @RequestParam(name = "player_ID") long player_ID,
     @RequestParam(name = "index") int index){
-      return gameService.checkIfSongGuessIsCorrect(game_ID, player_ID, index);
+        return gameService.checkIfSongGuessIsCorrect(game_ID, player_ID, index);
     }
 
     @GetMapping("/check/title")
     public boolean checkTitleGuess(@RequestParam(name = "game_ID") long game_ID, @RequestParam(name = "player_ID") long player_ID,
     @RequestParam(name = "title") String title){
-      return gameService.checkIfTitleGuessIsCorrect(game_ID, title, player_ID);
+        return gameService.checkIfTitleGuessIsCorrect(game_ID, title, player_ID);
     }
 
     @GetMapping("/check/artist")
     public boolean checkArtistGuess(@RequestParam(name = "game_ID") long game_ID, @RequestParam(name = "player_ID") long player_ID,
     @RequestParam(name = "name") String name){
-      return gameService.checkIfArtistNameGuessIsCorrect(game_ID, name, player_ID);
+        return gameService.checkIfArtistNameGuessIsCorrect(game_ID, name, player_ID);
     }
 }
