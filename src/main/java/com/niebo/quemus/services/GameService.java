@@ -1,6 +1,7 @@
 package com.niebo.quemus.services;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -10,7 +11,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.niebo.quemus.models.game.Game;
 import com.niebo.quemus.models.spotify.Playlist;
+import com.niebo.quemus.models.spotify.PlaylistTrackObject;
 import com.niebo.quemus.models.spotify.Song;
+import com.niebo.quemus.models.spotify.Tracks;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,8 +46,18 @@ public class GameService {
 
     public Game setPlaylist(long game_ID, String playlist_ID, String accessToken){
         Game currentGame = activeGames.get(game_ID);
-        currentGame.setPlaylist(webClient.get().uri("/playlists/" + playlist_ID + "?market=PL").header("Authorization", "Bearer " + accessToken)
+        currentGame.setPlaylist(webClient.get().uri("/playlists/" + playlist_ID).header("Authorization", "Bearer " + accessToken)
         .retrieve().bodyToMono(Playlist.class).block());
+        String next = currentGame.getPlaylist().getTracks().getNext();
+        while(next != null) {
+            next = next.substring("https://api.spotify.com/v1".length());
+            log.info("Next: " + next);
+            List<PlaylistTrackObject> items = currentGame.getPlaylist().getTracks().getItems();
+            currentGame.getPlaylist().setTracks((webClient.get().uri(next).header("Authorization", "Bearer " + accessToken)
+        .retrieve().bodyToMono(Tracks.class).block()));
+            currentGame.getPlaylist().getTracks().getItems().addAll(items);
+            next = currentGame.getPlaylist().getTracks().getNext();
+        }
         log.info("Playlist: " + currentGame.getPlaylist().getName());
         return currentGame;
     }
@@ -77,5 +90,11 @@ public class GameService {
     public boolean checkIfTitleGuessIsCorrect(long game_ID, String title, long player_ID){
         Game currentGame = activeGames.get(game_ID); 
         return currentGame.checkTitle(title, player_ID);
+    }
+
+    public Game resetPlaylist(long game_ID){
+         Game currentGame = activeGames.get(game_ID);
+         currentGame.setPlaylist(null);
+         return currentGame;
     }
 }

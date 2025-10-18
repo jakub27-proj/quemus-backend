@@ -44,5 +44,11 @@ public class GameController {
     @RequestParam(name = "game_ID") long game_ID, @CookieValue(name="spotify_access_token") String token){
         return ResponseEntity.ok(gameService.setPlaylist(game_ID, playlist_ID, token));
     }
+
+    @GetMapping("/resetplaylist")
+    public Game resetPlaylist(@RequestParam long game_ID) {
+        return this.gameService.resetPlaylist(game_ID);
+    }
+    
     
 }
