@@ -61,8 +61,10 @@ public class GameService {
         log.info("Playlist: " + currentGame.getPlaylist().getName());
         return currentGame;
     }
+    
     public Game startGame(long game_ID){
         Game currentGame = activeGames.get(game_ID);
+        log.info("Game has started: " + game_ID);
         currentGame.setCurrentPlayersTurn();
         currentGame.setTurnsLeft(currentGame.getTurnsLeft() * currentGame.getPlayers().size());
         if(currentGame.getPlaylist().getTracks().getItems().size() < currentGame.getTurnsLeft()){

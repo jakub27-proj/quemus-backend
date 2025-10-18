@@ -1,7 +1,6 @@
 package com.niebo.quemus.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,10 +38,15 @@ public class GameController {
         return gameService.joinGame(game_ID, name);
     }
 
+    @GetMapping("/start")
+    public Game startGame(@RequestParam(name = "game_ID") long game_ID){
+        return gameService.startGame(game_ID);
+    }
+
     @PostMapping("/setplaylist")
-    public ResponseEntity<Game> startGame(@RequestParam(name = "playlist_ID") String playlist_ID,
+    public Game setPlaylistGame(@RequestParam(name = "playlist_ID") String playlist_ID,
     @RequestParam(name = "game_ID") long game_ID, @CookieValue(name="spotify_access_token") String token){
-        return ResponseEntity.ok(gameService.setPlaylist(game_ID, playlist_ID, token));
+        return gameService.setPlaylist(game_ID, playlist_ID, token);
     }
 
     @GetMapping("/resetplaylist")

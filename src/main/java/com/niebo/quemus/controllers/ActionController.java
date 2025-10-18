@@ -1,13 +1,10 @@
 package com.niebo.quemus.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.niebo.quemus.models.game.Game;
 import com.niebo.quemus.models.spotify.Song;
 import com.niebo.quemus.services.GameService;
 
@@ -19,11 +16,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class ActionController {
     @Autowired
     private GameService gameService;
-
-    @GetMapping("/start")
-    public ResponseEntity<Game> startGame(@RequestParam(name = "game_ID") long game_ID){
-        return ResponseEntity.ok(gameService.startGame(game_ID));
-    }
 
     @GetMapping("/setsong")
     public Song setSongToGuess(@RequestParam(name = "game_ID") long game_ID){

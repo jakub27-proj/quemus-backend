@@ -1,6 +1,7 @@
 package com.niebo.quemus.controllers;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
 
+
 @RequestMapping("/api/auth")
 @RestController
 @Tag(name="Auth Controller", description = "Login to spotify Account")
@@ -25,7 +27,7 @@ public class AuthController {
     private String clientId;
     @Value("${spotify.redirect-uri}")
     private String redirectUri;
-    @Value("${spotify.scopes:user-read-private,user-read-email,playlist-read-private,playlist-read-collaborative}")
+    @Value("${spotify.scopes:user-read-private,user-read-email,playlist-read-private,playlist-read-collaborative,user-modify-playback-state,user-read-playback-state,streaming}")
     private String scopes;
 
     @GetMapping("/login")
@@ -48,4 +50,10 @@ public class AuthController {
         log.info("Logged in: " + loggedIn);
         return ResponseEntity.ok(Map.of("loggedIn", loggedIn));
     }
+    
+    @GetMapping("/token")
+    public Map<String, String> getToken(@CookieValue(value = "spotify_access_token", required = true) String accessToken) {
+        return Collections.singletonMap("access_token", accessToken);
+    }
+    
 }
