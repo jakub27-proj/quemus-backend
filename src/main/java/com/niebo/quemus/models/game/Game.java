@@ -34,6 +34,8 @@ public class Game {
     private boolean canJoin = true;
     @JsonIgnore
     private Random random = new Random();
+    @JsonIgnore
+    private int winCondition = 10;
     
     public Game(boolean isOnline, long game_ID, int turnsLeft){
         this.turnsLeft = turnsLeft;
@@ -106,6 +108,7 @@ public class Game {
         }
         playlistTrackObjects.add(index, this.currentSong);
         player.addPoint();
+        checkWinCondition(player);
         return true;
     }
 
@@ -136,6 +139,12 @@ public class Game {
             return true;
         } 
         return false;
+    }
+
+    private void checkWinCondition(Player player) {
+        if(player.getPoints() == winCondition){
+
+        }
     }
 
     @Override 
