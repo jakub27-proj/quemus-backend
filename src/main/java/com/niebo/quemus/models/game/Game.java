@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.niebo.quemus.models.spotify.Playlist;
 import com.niebo.quemus.models.spotify.PlaylistTrackObject;
 import com.niebo.quemus.models.spotify.SimplifiedArtistObject;
-import com.niebo.quemus.models.spotify.Song;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -73,12 +72,12 @@ public class Game {
         }
     }
 
-    public Song newCurrentSong(){
+    public PlaylistTrackObject newCurrentSong(){
          List<PlaylistTrackObject> listOfSongs = this.playlist.getTracks().getItems();
         if (listOfSongs.isEmpty()) return null;
         PlaylistTrackObject playlistTrackObject = listOfSongs.remove(random.nextInt(listOfSongs.size()));
         this.currentSong = playlistTrackObject;
-        return playlistTrackObject.getTrack();
+        return playlistTrackObject;
     }
 
     public Player findPlayerByID(long player_ID){

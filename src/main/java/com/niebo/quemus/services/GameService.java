@@ -12,7 +12,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.niebo.quemus.models.game.Game;
 import com.niebo.quemus.models.spotify.Playlist;
 import com.niebo.quemus.models.spotify.PlaylistTrackObject;
-import com.niebo.quemus.models.spotify.Song;
 import com.niebo.quemus.models.spotify.Tracks;
 
 import lombok.extern.slf4j.Slf4j;
@@ -75,7 +74,7 @@ public class GameService {
         return currentGame;
     }
 
-    public Song setNextSongToGuess(long game_ID){
+    public PlaylistTrackObject setNextSongToGuess(long game_ID){
        return this.activeGames.get(game_ID).newCurrentSong();
     }
 
