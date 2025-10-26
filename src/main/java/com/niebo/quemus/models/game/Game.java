@@ -121,7 +121,7 @@ public class Game {
         guess = guess.toLowerCase();
         List<SimplifiedArtistObject> artists = currentSong.getTrack().getArtists();
         for (SimplifiedArtistObject aritist: artists){
-            String name = aritist.getName();
+            String name = aritist.getName().toLowerCase();
             if(guess.equals(name)){
                 p.addSpecialToken();
                 return true;
@@ -133,7 +133,8 @@ public class Game {
     public boolean checkTitle(String guess, long player_ID){
         Player p = findPlayerByID(player_ID);
         guess = guess.toLowerCase();
-        if (guess.equals(currentSong.getTrack().getName())){
+        String title = currentSong.getTrack().getName().toLowerCase();
+        if (guess.equals(title)){
             p.addSpecialToken();
             return true;
         } 
