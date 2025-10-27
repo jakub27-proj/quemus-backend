@@ -40,4 +40,11 @@ public class ActionController {
     @RequestParam(name = "name") String name){
         return gameService.checkIfArtistNameGuessIsCorrect(game_ID, name, player_ID);
     }
+
+    @GetMapping("/use/token")
+    public boolean useToken(@RequestParam(name = "game_ID") long game_ID, @RequestParam(name = "player_ID") long player_ID, 
+    @RequestParam(name = "index") int index) {
+        return gameService.useToken(game_ID, player_ID, index);
+    }
+    
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.niebo.quemus.models.game.Game;
+import com.niebo.quemus.models.game.Player;
 import com.niebo.quemus.models.spotify.Playlist;
 import com.niebo.quemus.models.spotify.PlaylistTrackObject;
 import com.niebo.quemus.models.spotify.Tracks;
@@ -80,7 +81,14 @@ public class GameService {
 
     public boolean checkIfSongGuessIsCorrect(long game_ID, long player_ID, int index){
         Game currentGame = activeGames.get(game_ID);
-        return currentGame.checkDatesOfCreation(index, currentGame.findPlayerByID(player_ID));
+        Player player = currentGame.findPlayerByID(player_ID);
+        if(currentGame.checkDatesOfCreation(index, player)) {
+            player.getSongsList().add(index, currentGame.getCurrentSong());
+            player.addPoint();
+            currentGame.checkWinCondition(player);
+            return true;
+        }
+        return false;
     }
 
     public boolean checkIfArtistNameGuessIsCorrect(long game_ID, String artistName, long player_ID){
@@ -91,6 +99,20 @@ public class GameService {
     public boolean checkIfTitleGuessIsCorrect(long game_ID, String title, long player_ID){
         Game currentGame = activeGames.get(game_ID); 
         return currentGame.checkTitle(title, player_ID);
+    }
+
+    public boolean useToken(long game_ID, long player_ID, int index){
+        Game currentGame = activeGames.get(game_ID);
+        Player player = currentGame.findPlayerByID(player_ID);
+        if(player.deleteSpecialToken()){
+            if (currentGame.checkDatesOfCreation(index, currentGame.findCurrentPlayersTurn())){
+                player.addPoint();
+                player.addSongProperly(currentGame.getCurrentSong());
+                currentGame.checkWinCondition(player);
+                return true;
+            }
+        }
+        return false;
     }
 
     public Game resetPlaylist(long game_ID){

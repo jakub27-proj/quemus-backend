@@ -67,6 +67,7 @@ public class Game {
 
     public void setFirstSongForPlayers(){
         List<PlaylistTrackObject> listOfSongs = playlist.getTracks().getItems();
+        this.turnsLeft--;
         for(Player player: players){
             player.getSongsList().add(listOfSongs.remove(random.nextInt(listOfSongs.size())));
         }
@@ -91,23 +92,28 @@ public class Game {
         return currentPlayer;
     }
 
+    public Player findCurrentPlayersTurn() { 
+         Player currentPlayer = null;
+        for(Player player: this.players){
+            if(player.isHasTurn()){
+                currentPlayer = player;
+                break;
+            }
+        }
+        return currentPlayer;
+    }
+
     public boolean checkDatesOfCreation(int index, Player player){
         List<PlaylistTrackObject> playlistTrackObjects = player.getSongsList();
-        this.turnsLeft--;
         int currYear = getReleaseYear(currentSong.getTrack().getAlbum().release_date());
-        if(index > 0){
-            PlaylistTrackObject ptoLeft = playlistTrackObjects.get(index - 1);
-            int leftYear = getReleaseYear(ptoLeft.getTrack().getAlbum().release_date());
-           if (leftYear > currYear) return false;
-        }
+        PlaylistTrackObject ptoLeft = playlistTrackObjects.get(index);
+        int leftYear = getReleaseYear(ptoLeft.getTrack().getAlbum().release_date());
+        if (leftYear > currYear) return false;
         if (index != playlistTrackObjects.size() - 1){
             PlaylistTrackObject ptoRight = playlistTrackObjects.get(index + 1);
             int rightYear = getReleaseYear(ptoRight.getTrack().getAlbum().release_date());
             if (currYear > rightYear) return false;
         }
-        playlistTrackObjects.add(index, this.currentSong);
-        player.addPoint();
-        checkWinCondition(player);
         return true;
     }
 
@@ -141,7 +147,7 @@ public class Game {
         return false;
     }
 
-    private void checkWinCondition(Player player) {
+    public void checkWinCondition(Player player) {
         if(player.getPoints() == winCondition){
 
         }
