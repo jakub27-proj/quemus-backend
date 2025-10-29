@@ -106,11 +106,13 @@ public class Game {
     public boolean checkDatesOfCreation(int index, Player player){
         List<PlaylistTrackObject> playlistTrackObjects = player.getSongsList();
         int currYear = getReleaseYear(currentSong.getTrack().getAlbum().release_date());
-        PlaylistTrackObject ptoLeft = playlistTrackObjects.get(index);
-        int leftYear = getReleaseYear(ptoLeft.getTrack().getAlbum().release_date());
-        if (leftYear > currYear) return false;
-        if (index != playlistTrackObjects.size() - 1){
-            PlaylistTrackObject ptoRight = playlistTrackObjects.get(index + 1);
+        if (index > 0){
+            PlaylistTrackObject ptoLeft = playlistTrackObjects.get(index - 1);
+            int leftYear = getReleaseYear(ptoLeft.getTrack().getAlbum().release_date());
+            if (leftYear > currYear) return false;
+        }
+        if (index < playlistTrackObjects.size()){
+            PlaylistTrackObject ptoRight = playlistTrackObjects.get(index);
             int rightYear = getReleaseYear(ptoRight.getTrack().getAlbum().release_date());
             if (currYear > rightYear) return false;
         }

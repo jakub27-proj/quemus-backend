@@ -43,14 +43,23 @@ public class Player {
     public void addPoint(){
         this.points++;
     }
+
     public void addSongProperly(PlaylistTrackObject currentSong){
         int currYear = Integer.parseInt(currentSong.getTrack().getAlbum().release_date().substring(0,4));
         for(int i = 0; i < songsList.size(); i++){
-            if(i == songsList.size() - 1) this.songsList.add(currentSong);
+            if(i == songsList.size() - 1){
+                this.songsList.add(currentSong);
+                break;
+            } 
             int prev_year = Integer.parseInt(songsList.get(i).getTrack().getAlbum().release_date().substring(0,4));
+            if(i == 0 && prev_year <= currYear){
+                this.songsList.add(i,currentSong);
+                break;
+            }
             int next_year = Integer.parseInt(songsList.get(i + 1).getTrack().getAlbum().release_date().substring(0,4));
             if(prev_year <= currYear && currYear <= next_year){
                 this.songsList.add(i, currentSong);
+                break;
             }
         }
     }

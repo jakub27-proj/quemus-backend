@@ -86,6 +86,7 @@ public class GameService {
             player.getSongsList().add(index, currentGame.getCurrentSong());
             player.addPoint();
             currentGame.checkWinCondition(player);
+            currentGame.setCurrentPlayersTurn();
             return true;
         }
         return false;
@@ -101,23 +102,33 @@ public class GameService {
         return currentGame.checkTitle(title, player_ID);
     }
 
-    public boolean useToken(long game_ID, long player_ID, int index){
+    public boolean checkToken(long game_ID, long player_ID, int index){
         Game currentGame = activeGames.get(game_ID);
         Player player = currentGame.findPlayerByID(player_ID);
-        if(player.deleteSpecialToken()){
-            if (currentGame.checkDatesOfCreation(index, currentGame.findCurrentPlayersTurn())){
-                player.addPoint();
-                player.addSongProperly(currentGame.getCurrentSong());
-                currentGame.checkWinCondition(player);
-                return true;
-            }
+        if (currentGame.checkDatesOfCreation(index, currentGame.findCurrentPlayersTurn())){
+            player.addPoint();
+            player.addSongProperly(currentGame.getCurrentSong());
+            currentGame.checkWinCondition(player);
+            currentGame.setCurrentPlayersTurn();
+            return true;
         }
         return false;
+    }
+
+    public boolean useToken(long game_ID, long player_ID) {
+        Game currentGame = activeGames.get(game_ID);
+        Player player = currentGame.findPlayerByID(player_ID);
+        return player.deleteSpecialToken();
     }
 
     public Game resetPlaylist(long game_ID){
          Game currentGame = activeGames.get(game_ID);
          currentGame.setPlaylist(null);
          return currentGame;
+    }
+
+    public void newTurn(long game_ID){
+        Game currentGame = activeGames.get(game_ID);
+        currentGame.setCurrentPlayersTurn();
     }
 }

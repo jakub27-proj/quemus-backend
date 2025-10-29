@@ -1,6 +1,8 @@
 package com.niebo.quemus.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,10 +43,20 @@ public class ActionController {
         return gameService.checkIfArtistNameGuessIsCorrect(game_ID, name, player_ID);
     }
 
-    @GetMapping("/use/token")
-    public boolean useToken(@RequestParam(name = "game_ID") long game_ID, @RequestParam(name = "player_ID") long player_ID, 
+    @GetMapping("/check/token")
+    public boolean checkToken(@RequestParam(name = "game_ID") long game_ID, @RequestParam(name = "player_ID") long player_ID, 
     @RequestParam(name = "index") int index) {
-        return gameService.useToken(game_ID, player_ID, index);
+        return gameService.checkToken(game_ID, player_ID, index);
     }
-    
+
+    @GetMapping("/use/token")
+    public boolean useToken(@RequestParam(name = "game_ID") long game_ID, @RequestParam(name = "player_ID") long player_ID) {
+        return gameService.useToken(game_ID, player_ID);
+    }
+
+    @GetMapping("/turn")
+    public ResponseEntity<Void> newTurn(@RequestParam(name = "game_ID") long game_ID) {
+        gameService.newTurn(game_ID);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 }
