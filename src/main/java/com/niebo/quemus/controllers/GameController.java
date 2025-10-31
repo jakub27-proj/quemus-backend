@@ -1,12 +1,7 @@
 package com.niebo.quemus.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.niebo.quemus.models.game.Game;
 import com.niebo.quemus.services.GameService;
@@ -49,10 +44,14 @@ public class GameController {
         return gameService.setPlaylist(game_ID, playlist_ID, token);
     }
 
-    @GetMapping("/resetplaylist")
+    @DeleteMapping("/resetplaylist")
     public Game resetPlaylist(@RequestParam long game_ID) {
         return this.gameService.resetPlaylist(game_ID);
     }
-    
+
+    @DeleteMapping("")
+    public void deleteGame(@RequestParam(name = "game_ID") long game_ID){
+        gameService.deleteGame(game_ID);
+    }
     
 }

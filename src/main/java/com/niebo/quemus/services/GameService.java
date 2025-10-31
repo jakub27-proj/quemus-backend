@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.niebo.quemus.controllers.NotificationController;
+import com.niebo.quemus.models.game.Notification;
+import com.niebo.quemus.models.game.NotificationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -25,6 +28,8 @@ public class GameService {
     private static final AtomicLong playerID = new AtomicLong(0);
     @Autowired
     private WebClient webClient;
+    @Autowired
+    private NotificationController notificationController;
 
     public Game getGameById(long game_ID){
         return activeGames.get(game_ID);
@@ -85,7 +90,9 @@ public class GameService {
         if(currentGame.checkDatesOfCreation(index, player)) {
             player.getSongsList().add(index, currentGame.getCurrentSong());
             player.addPoint();
-            currentGame.checkWinCondition(player);
+            if(currentGame.checkWinCondition(player)){
+                notificationController.sendMessage(new Notification(NotificationType.END,""), currentGame.getGame_ID());
+            }
             currentGame.setCurrentPlayersTurn();
             return true;
         }
@@ -108,7 +115,9 @@ public class GameService {
         if (currentGame.checkDatesOfCreation(index, currentGame.findCurrentPlayersTurn())){
             player.addPoint();
             player.addSongProperly(currentGame.getCurrentSong());
-            currentGame.checkWinCondition(player);
+            if(currentGame.checkWinCondition(player)){
+                notificationController.sendMessage(new Notification(NotificationType.END,""), currentGame.getGame_ID());
+            }
             currentGame.setCurrentPlayersTurn();
             return true;
         }
@@ -130,5 +139,10 @@ public class GameService {
     public void newTurn(long game_ID){
         Game currentGame = activeGames.get(game_ID);
         currentGame.setCurrentPlayersTurn();
+    }
+
+    public void deleteGame(long game_ID){
+        log.info("Deleting game: " + game_ID);
+        this.activeGames.remove(game_ID);
     }
 }

@@ -149,10 +149,8 @@ public class Game {
         return false;
     }
 
-    public void checkWinCondition(Player player) {
-        if(player.getPoints() == winCondition){
-
-        }
+    public boolean checkWinCondition(Player player) {
+        return player.getPoints() == winCondition;
     }
 
     @Override 
