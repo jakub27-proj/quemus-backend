@@ -91,7 +91,9 @@ public class GameService {
             player.getSongsList().add(index, currentGame.getCurrentSong());
             player.addPoint();
             if(currentGame.checkWinCondition(player)){
-                notificationController.sendMessage(new Notification(NotificationType.END,""), currentGame.getGame_ID());
+                log.info("Game Finished");
+                notificationController.sendMessage(new Notification(NotificationType.END, String.valueOf(currentGame.getGame_ID())),
+                 currentGame.getGame_ID());
             }
             currentGame.setCurrentPlayersTurn();
             return true;
@@ -116,7 +118,9 @@ public class GameService {
             player.addPoint();
             player.addSongProperly(currentGame.getCurrentSong());
             if(currentGame.checkWinCondition(player)){
-                notificationController.sendMessage(new Notification(NotificationType.END,""), currentGame.getGame_ID());
+                log.info("Game Finished");
+                notificationController.sendMessage(
+                    new Notification(NotificationType.END, String.valueOf(currentGame.getGame_ID())), currentGame.getGame_ID());
             }
             currentGame.setCurrentPlayersTurn();
             return true;
