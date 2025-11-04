@@ -8,6 +8,8 @@ import com.niebo.quemus.services.GameService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PostMapping;
+
 
 @RestController
 @RequestMapping("/api/game")
@@ -52,6 +54,11 @@ public class GameController {
     @DeleteMapping("")
     public void deleteGame(@RequestParam(name = "game_ID") long game_ID){
         gameService.deleteGame(game_ID);
+    }
+    
+    @PutMapping("/online")
+    public void setOnline(@RequestBody long game_ID) {
+        gameService.setOnline(game_ID);
     }
     
 }

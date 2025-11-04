@@ -42,10 +42,24 @@ public class GameService {
         return game;
     }
 
+    public void setOnline(long game_ID){
+        Game game = activeGames.get(game_ID);
+        game.setOnline(true);
+        notificationController.sendMessage(new Notification(NotificationType.REFRESH, ""), game_ID);
+    }
+
     public Game joinGame(long game_ID, String name){
         Game currentGame = activeGames.get(game_ID);
-        log.info("Player:" + name);
-        currentGame.addPlayer(playerID.getAndAdd(1), name);
+        if (!currentGame.isCanJoin()){
+            return null;
+        }
+        log.info("Player: " + name);
+        long id = playerID.getAndAdd(1);
+        currentGame.addPlayer(id, name);
+        if (currentGame.isOnline()){
+            notificationController.sendMessage(new Notification(NotificationType.REFRESH, String.valueOf(id)),
+             currentGame.getGame_ID());
+        }
         return currentGame;
     }
 
@@ -64,6 +78,10 @@ public class GameService {
             next = currentGame.getPlaylist().getTracks().getNext();
         }
         log.info("Playlist: " + currentGame.getPlaylist().getName());
+        if (currentGame.isOnline()){
+            notificationController.sendMessage(new Notification(NotificationType.REFRESH, ""),
+             currentGame.getGame_ID());
+        }
         return currentGame;
     }
     
@@ -87,62 +105,95 @@ public class GameService {
     public boolean checkIfSongGuessIsCorrect(long game_ID, long player_ID, int index){
         Game currentGame = activeGames.get(game_ID);
         Player player = currentGame.findPlayerByID(player_ID);
-        if(currentGame.checkDatesOfCreation(index, player)) {
+        boolean ans = currentGame.checkDatesOfCreation(index, player);
+        if(ans) {
             player.getSongsList().add(index, currentGame.getCurrentSong());
             player.addPoint();
             if(currentGame.checkWinCondition(player)){
                 log.info("Game Finished");
                 notificationController.sendMessage(new Notification(NotificationType.END, String.valueOf(currentGame.getGame_ID())),
                  currentGame.getGame_ID());
+                 return true;
             }
             currentGame.setCurrentPlayersTurn();
-            return true;
+        }
+        if (currentGame.isOnline()){
+            notificationController.sendMessage(new Notification(NotificationType.REFRESH, ""),
+            currentGame.getGame_ID());
         }
         return false;
     }
 
     public boolean checkIfArtistNameGuessIsCorrect(long game_ID, String artistName, long player_ID){
         Game currentGame = activeGames.get(game_ID);
-        return currentGame.checkArtistName(artistName, player_ID);
+        boolean ans = currentGame.checkArtistName(artistName, player_ID);
+        if (currentGame.isOnline()){
+            notificationController.sendMessage(new Notification(NotificationType.REFRESH, ""),
+            currentGame.getGame_ID());
+        }
+        return ans;
     }
 
     public boolean checkIfTitleGuessIsCorrect(long game_ID, String title, long player_ID){
         Game currentGame = activeGames.get(game_ID); 
-        return currentGame.checkTitle(title, player_ID);
+        boolean ans = currentGame.checkTitle(title, player_ID);
+        if (currentGame.isOnline()){
+            notificationController.sendMessage(new Notification(NotificationType.REFRESH, ""),
+            currentGame.getGame_ID());
+        }
+        return ans;
     }
 
     public boolean checkToken(long game_ID, long player_ID, int index){
         Game currentGame = activeGames.get(game_ID);
         Player player = currentGame.findPlayerByID(player_ID);
-        if (currentGame.checkDatesOfCreation(index, currentGame.findCurrentPlayersTurn())){
+        boolean ans = currentGame.checkDatesOfCreation(index, currentGame.findCurrentPlayersTurn());
+        if (ans){
             player.addPoint();
             player.addSongProperly(currentGame.getCurrentSong());
             if(currentGame.checkWinCondition(player)){
                 log.info("Game Finished");
                 notificationController.sendMessage(
                     new Notification(NotificationType.END, String.valueOf(currentGame.getGame_ID())), currentGame.getGame_ID());
+                return true;
             }
             currentGame.setCurrentPlayersTurn();
-            return true;
         }
-        return false;
+        if (currentGame.isOnline()){
+            notificationController.sendMessage(new Notification(NotificationType.REFRESH, ""),
+            currentGame.getGame_ID());
+        }
+        return ans;
     }
 
     public boolean useToken(long game_ID, long player_ID) {
         Game currentGame = activeGames.get(game_ID);
         Player player = currentGame.findPlayerByID(player_ID);
-        return player.deleteSpecialToken();
+        boolean ans = player.deleteSpecialToken();
+        if (currentGame.isOnline() && ans){
+            notificationController.sendMessage(new Notification(NotificationType.REFRESH, ""),
+            currentGame.getGame_ID());
+        }
+        return ans;
     }
 
     public Game resetPlaylist(long game_ID){
-         Game currentGame = activeGames.get(game_ID);
-         currentGame.setPlaylist(null);
-         return currentGame;
+        Game currentGame = activeGames.get(game_ID);
+        currentGame.setPlaylist(null);
+        if (currentGame.isOnline()){
+            notificationController.sendMessage(new Notification(NotificationType.REFRESH, ""),
+            currentGame.getGame_ID());
+        }
+        return currentGame;
     }
 
     public void newTurn(long game_ID){
         Game currentGame = activeGames.get(game_ID);
         currentGame.setCurrentPlayersTurn();
+        if (currentGame.isOnline()){
+            notificationController.sendMessage(new Notification(NotificationType.REFRESH, ""),
+            currentGame.getGame_ID());
+        }
     }
 
     public void deleteGame(long game_ID){
