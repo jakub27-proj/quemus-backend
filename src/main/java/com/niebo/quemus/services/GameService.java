@@ -94,25 +94,23 @@ public class GameService {
         currentGame.setCurrentPlayersTurn();
         currentGame.setTurnsLeft(currentGame.getTurnsLeft() * currentGame.getPlayers().size());
         if(currentGame.getPlaylist().getTracks().getItems().size() < currentGame.getTurnsLeft()){
-            currentGame.setTurnsLeft((int) (currentGame.getPlaylist().getTracks().getItems().size() / 4));
+            currentGame.setTurnsLeft((int) (currentGame.getPlaylist().getTracks().getItems().size()));
         }
         currentGame.startGame();
         currentGame.setFirstSongForPlayers();
+        currentGame.newCurrentSong();
+        if(currentGame.isOnline()) {
+            this.notificationController.sendMessage(new Notification(NotificationType.START, String.valueOf(game_ID)), game_ID);
+        }
         return currentGame;
-    }
-
-    public PlaylistTrackObject setNextSongToGuess(long game_ID){
-       return this.activeGames.get(game_ID).newCurrentSong();
     }
 
     public boolean checkIfSongGuessIsCorrect(Game currentGame, GameAction action){
         Player player = currentGame.findPlayerByID(action.getPlayer().getId());
         int index = action.getIndex();
         boolean ans = currentGame.checkDatesOfCreation(index, player);
-        log.info("Song: " + ans);
         if(ans) {
             player.getSongsList().add(index, currentGame.getCurrentSong());
-            log.info(player.getSongsList().toString());
             player.addPoint();
             if(currentGame.checkWinCondition(player)){
                 log.info("Game Finished");
@@ -149,11 +147,9 @@ public class GameService {
         Player player = currentGame.findPlayerByID(action.getPlayer().getId());
         int index = action.getIndex();
         boolean ans = currentGame.checkDatesOfCreation(index, currentGame.findCurrentPlayersTurn());
-        log.info("Token: " + ans);
         if (ans){
             player.addPoint();
             player.addSongProperly(currentGame.getCurrentSong());
-            log.info(player.getSongsList().toString());
             if(currentGame.checkWinCondition(player)){
                 log.info("Game Finished");
                 notificationController.sendMessage(
@@ -177,7 +173,6 @@ public class GameService {
 
     public Game resetPlaylist(long game_ID){
         Game currentGame = activeGames.get(game_ID);
-        currentGame.setPlaylist(null);
         if (currentGame.isOnline()){
             notificationController.sendMessage(new Notification(NotificationType.REFRESH, ""),
             currentGame.getGame_ID());
@@ -189,11 +184,7 @@ public class GameService {
         Game currentGame = activeGames.get(game_ID);
         currentGame.getActions().add(action);
         if (currentGame.isOnline()){
-            notificationController.sendMessage(new Notification(NotificationType.REFRESH, ""),
-            currentGame.getGame_ID());
-        }
-        if (currentGame.isOnline()){
-            notificationController.sendMessage(new Notification(NotificationType.REFRESH, ""),
+            notificationController.sendMessage(new Notification(NotificationType.REFRESH_ACTIONS, ""),
             currentGame.getGame_ID());
         }
         return currentGame.getActions();
@@ -213,15 +204,13 @@ public class GameService {
             }
         }
         newTurn(currentGame);
-        for(Player player: currentGame.getPlayers()){
-            log.info(player.getName()+ ": " + player.getSongsList().toString());
-        }
         return currentGame;
     }
 
     public void newTurn(Game currentGame){
         currentGame.setCurrentPlayersTurn();
         currentGame.setActions(new ArrayList<>());
+        currentGame.newCurrentSong();
         if (currentGame.isOnline()){
             notificationController.sendMessage(new Notification(NotificationType.REFRESH, ""),
             currentGame.getGame_ID());

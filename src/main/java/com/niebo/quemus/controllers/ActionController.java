@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.niebo.quemus.models.spotify.PlaylistTrackObject;
 import com.niebo.quemus.services.GameService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,10 +27,11 @@ public class ActionController {
     @Autowired
     private GameService gameService;
 
-    @GetMapping("/setsong")
-    public PlaylistTrackObject setSongToGuess(@RequestParam(name = "game_ID") long game_ID){
-      return gameService.setNextSongToGuess(game_ID);
+    @GetMapping("")
+    public List<GameAction> getGameActions(@RequestParam(name = "game_ID") long game_ID) {
+        return gameService.getGameById(game_ID).getActions();
     }
+    
 
     @GetMapping("/check/title")
     public boolean checkTitleGuess(@RequestParam(name = "game_ID") long game_ID, @RequestParam(name = "player_ID") long player_ID,

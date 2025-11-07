@@ -62,6 +62,9 @@ public class Game {
                 }
             }
         }else{
+            for(Player player: players){
+                player.setHasTurn(false);
+            }
             players.get(random.nextInt(players.size())).setHasTurn(true);
         }
     }
@@ -74,12 +77,11 @@ public class Game {
         }
     }
 
-    public PlaylistTrackObject newCurrentSong(){
+    public void newCurrentSong(){
          List<PlaylistTrackObject> listOfSongs = this.playlist.getTracks().getItems();
-        if (listOfSongs.isEmpty()) return null;
+        if (listOfSongs.isEmpty()) return;
         PlaylistTrackObject playlistTrackObject = listOfSongs.remove(random.nextInt(listOfSongs.size()));
         this.currentSong = playlistTrackObject;
-        return playlistTrackObject;
     }
 
     public Player findPlayerByID(long player_ID){
