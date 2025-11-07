@@ -173,6 +173,7 @@ public class GameService {
 
     public Game resetPlaylist(long game_ID){
         Game currentGame = activeGames.get(game_ID);
+        currentGame.setPlaylist(null);
         if (currentGame.isOnline()){
             notificationController.sendMessage(new Notification(NotificationType.REFRESH, ""),
             currentGame.getGame_ID());
