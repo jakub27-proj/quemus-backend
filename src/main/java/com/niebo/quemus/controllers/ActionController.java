@@ -1,8 +1,8 @@
 package com.niebo.quemus.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,6 +12,14 @@ import com.niebo.quemus.models.spotify.PlaylistTrackObject;
 import com.niebo.quemus.services.GameService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import com.niebo.quemus.models.game.Game;
+import com.niebo.quemus.models.game.GameAction;
+
+
 
 @RestController
 @RequestMapping("/api/action")
@@ -23,12 +31,6 @@ public class ActionController {
     @GetMapping("/setsong")
     public PlaylistTrackObject setSongToGuess(@RequestParam(name = "game_ID") long game_ID){
       return gameService.setNextSongToGuess(game_ID);
-    }
-
-    @GetMapping("/check/song")
-    public boolean checkSongPlacement(@RequestParam(name = "game_ID") long game_ID, @RequestParam(name = "player_ID") long player_ID,
-    @RequestParam(name = "index") int index){
-        return gameService.checkIfSongGuessIsCorrect(game_ID, player_ID, index);
     }
 
     @GetMapping("/check/title")
@@ -43,20 +45,18 @@ public class ActionController {
         return gameService.checkIfArtistNameGuessIsCorrect(game_ID, name, player_ID);
     }
 
-    @GetMapping("/check/token")
-    public boolean checkToken(@RequestParam(name = "game_ID") long game_ID, @RequestParam(name = "player_ID") long player_ID, 
-    @RequestParam(name = "index") int index) {
-        return gameService.checkToken(game_ID, player_ID, index);
+    @PutMapping("/add/action")
+    public List<GameAction> addAction(@RequestBody GameAction action, @RequestParam(name = "game_ID") long game_ID) {
+        return gameService.addAction(game_ID, action);
+    }
+
+    @GetMapping("/execute/action")
+    public Game executeAction(@RequestParam(name = "game_ID") long game_ID) {
+        return gameService.executeActions(game_ID);
     }
 
     @GetMapping("/use/token")
     public boolean useToken(@RequestParam(name = "game_ID") long game_ID, @RequestParam(name = "player_ID") long player_ID) {
         return gameService.useToken(game_ID, player_ID);
-    }
-
-    @GetMapping("/turn")
-    public ResponseEntity<Void> newTurn(@RequestParam(name = "game_ID") long game_ID) {
-        gameService.newTurn(game_ID);
-        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

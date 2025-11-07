@@ -16,5 +16,10 @@ public class PlaylistTrackObject {
     private PlaylistCreator added_by;
     private boolean is_local;
     private Song track;
-    
+
+    @Override
+    public String toString(){
+        return this.track.getName();
+    }
 }
+

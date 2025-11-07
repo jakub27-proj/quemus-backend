@@ -1,5 +1,6 @@
 package com.niebo.quemus.services;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,11 +9,13 @@ import java.util.concurrent.atomic.AtomicLong;
 import com.niebo.quemus.controllers.NotificationController;
 import com.niebo.quemus.models.game.Notification;
 import com.niebo.quemus.models.game.NotificationType;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.niebo.quemus.models.game.Game;
+import com.niebo.quemus.models.game.GameAction;
 import com.niebo.quemus.models.game.Player;
 import com.niebo.quemus.models.spotify.Playlist;
 import com.niebo.quemus.models.spotify.PlaylistTrackObject;
@@ -102,12 +105,14 @@ public class GameService {
        return this.activeGames.get(game_ID).newCurrentSong();
     }
 
-    public boolean checkIfSongGuessIsCorrect(long game_ID, long player_ID, int index){
-        Game currentGame = activeGames.get(game_ID);
-        Player player = currentGame.findPlayerByID(player_ID);
+    public boolean checkIfSongGuessIsCorrect(Game currentGame, GameAction action){
+        Player player = currentGame.findPlayerByID(action.getPlayer().getId());
+        int index = action.getIndex();
         boolean ans = currentGame.checkDatesOfCreation(index, player);
+        log.info("Song: " + ans);
         if(ans) {
             player.getSongsList().add(index, currentGame.getCurrentSong());
+            log.info(player.getSongsList().toString());
             player.addPoint();
             if(currentGame.checkWinCondition(player)){
                 log.info("Game Finished");
@@ -115,13 +120,8 @@ public class GameService {
                  currentGame.getGame_ID());
                  return true;
             }
-            currentGame.setCurrentPlayersTurn();
         }
-        if (currentGame.isOnline()){
-            notificationController.sendMessage(new Notification(NotificationType.REFRESH, ""),
-            currentGame.getGame_ID());
-        }
-        return false;
+        return ans;
     }
 
     public boolean checkIfArtistNameGuessIsCorrect(long game_ID, String artistName, long player_ID){
@@ -134,6 +134,7 @@ public class GameService {
         return ans;
     }
 
+
     public boolean checkIfTitleGuessIsCorrect(long game_ID, String title, long player_ID){
         Game currentGame = activeGames.get(game_ID); 
         boolean ans = currentGame.checkTitle(title, player_ID);
@@ -144,24 +145,21 @@ public class GameService {
         return ans;
     }
 
-    public boolean checkToken(long game_ID, long player_ID, int index){
-        Game currentGame = activeGames.get(game_ID);
-        Player player = currentGame.findPlayerByID(player_ID);
+    public boolean checkToken(Game currentGame, GameAction action){
+        Player player = currentGame.findPlayerByID(action.getPlayer().getId());
+        int index = action.getIndex();
         boolean ans = currentGame.checkDatesOfCreation(index, currentGame.findCurrentPlayersTurn());
+        log.info("Token: " + ans);
         if (ans){
             player.addPoint();
             player.addSongProperly(currentGame.getCurrentSong());
+            log.info(player.getSongsList().toString());
             if(currentGame.checkWinCondition(player)){
                 log.info("Game Finished");
                 notificationController.sendMessage(
                     new Notification(NotificationType.END, String.valueOf(currentGame.getGame_ID())), currentGame.getGame_ID());
                 return true;
             }
-            currentGame.setCurrentPlayersTurn();
-        }
-        if (currentGame.isOnline()){
-            notificationController.sendMessage(new Notification(NotificationType.REFRESH, ""),
-            currentGame.getGame_ID());
         }
         return ans;
     }
@@ -187,9 +185,43 @@ public class GameService {
         return currentGame;
     }
 
-    public void newTurn(long game_ID){
+    public List<GameAction> addAction(long game_ID, GameAction action){
         Game currentGame = activeGames.get(game_ID);
+        currentGame.getActions().add(action);
+        if (currentGame.isOnline()){
+            notificationController.sendMessage(new Notification(NotificationType.REFRESH, ""),
+            currentGame.getGame_ID());
+        }
+        if (currentGame.isOnline()){
+            notificationController.sendMessage(new Notification(NotificationType.REFRESH, ""),
+            currentGame.getGame_ID());
+        }
+        return currentGame.getActions();
+    }
+
+    public Game executeActions(long game_ID) {
+        Game currentGame = activeGames.get(game_ID);
+        for(GameAction action: currentGame.getActions()){
+            if(action.getPlayer().isHasTurn()){
+                if(checkIfSongGuessIsCorrect(currentGame, action)){
+                    break;
+                }
+            }else{
+                if(checkToken(currentGame, action)){
+                    break;
+                }
+            }
+        }
+        newTurn(currentGame);
+        for(Player player: currentGame.getPlayers()){
+            log.info(player.getName()+ ": " + player.getSongsList().toString());
+        }
+        return currentGame;
+    }
+
+    public void newTurn(Game currentGame){
         currentGame.setCurrentPlayersTurn();
+        currentGame.setActions(new ArrayList<>());
         if (currentGame.isOnline()){
             notificationController.sendMessage(new Notification(NotificationType.REFRESH, ""),
             currentGame.getGame_ID());

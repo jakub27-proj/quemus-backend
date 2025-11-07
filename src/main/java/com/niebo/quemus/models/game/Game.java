@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 public class Game {
     private long game_ID;
     private List<Player> players = new ArrayList<>();
+    private List<GameAction> actions = new ArrayList<>();
     private int turnsLeft;
     private Playlist playlist;
     private PlaylistTrackObject currentSong;
