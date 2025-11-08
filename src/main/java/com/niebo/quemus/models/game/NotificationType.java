@@ -5,6 +5,6 @@ public enum NotificationType {
     REFRESH_ACTIONS,
     END,
     START,
-    STOP_TIME,
-    START_IME
+    LOCKED_BY_PLAYER,
+    UNLOCKED_BY_PLAYER
 }
