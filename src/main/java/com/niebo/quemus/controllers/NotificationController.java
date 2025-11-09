@@ -2,6 +2,7 @@ package com.niebo.quemus.controllers;
 
 import com.niebo.quemus.models.game.Notification;
 import com.niebo.quemus.models.game.NotificationType;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -30,10 +31,7 @@ public class NotificationController {
             }
         }
         else if (notification.getType() == NotificationType.UNLOCKED_BY_PLAYER) {
-            boolean removed = gameLocks.remove(game_ID, notification.getMessage());
-            if (!removed) {
-                return;
-            }
+            gameLocks.remove(game_ID, notification.getMessage());
         }
 
         String destination = "/topic/game/" + game_ID;

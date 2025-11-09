@@ -164,10 +164,6 @@ public class GameService {
         Game currentGame = activeGames.get(game_ID);
         Player player = currentGame.findPlayerByID(player_ID);
         boolean ans = player.deleteSpecialToken();
-        if (currentGame.isOnline() && ans){
-            notificationController.sendMessage(new Notification(NotificationType.REFRESH, ""),
-            currentGame.getGame_ID());
-        }
         return ans;
     }
 
@@ -193,6 +189,7 @@ public class GameService {
 
     public Game executeActions(long game_ID) {
         Game currentGame = activeGames.get(game_ID);
+        if(currentGame.getActions().isEmpty()) return currentGame;
         for(GameAction action: currentGame.getActions()){
             if(action.getPlayer().isHasTurn()){
                 if(checkIfSongGuessIsCorrect(currentGame, action)){
@@ -213,6 +210,8 @@ public class GameService {
         currentGame.setActions(new ArrayList<>());
         currentGame.newCurrentSong();
         if (currentGame.isOnline()){
+            notificationController.sendMessage(new Notification(NotificationType.LOCKED_BY_PLAYER,
+            String.valueOf(currentGame.findCurrentPlayersTurn().getId())), currentGame.getGame_ID());
             notificationController.sendMessage(new Notification(NotificationType.REFRESH, ""),
             currentGame.getGame_ID());
         }
