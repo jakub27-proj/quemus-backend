@@ -19,9 +19,6 @@ import com.niebo.quemus.services.SpotifyService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
-
-
-
 @RequestMapping("/api/auth")
 @RestController
 @Tag(name="Auth Controller", description = "Login to spotify Account")
@@ -55,7 +52,7 @@ public class AuthController {
 
     boolean valid = spotifyService.isTokenValid(accessToken);
     if (!valid) {
-        log.info("Access token wygasł — odświeżanie...");
+        log.info("Refreshing token...");
         accessToken = spotifyService.refreshAccessToken(refreshToken);
     }
 

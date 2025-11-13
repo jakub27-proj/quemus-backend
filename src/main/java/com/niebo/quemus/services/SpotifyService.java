@@ -10,10 +10,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -42,7 +40,7 @@ public class SpotifyService {
     }
     public String refreshAccessToken(String refreshToken) throws IOException, InterruptedException {
         if (refreshToken == null || refreshToken.isBlank()) {
-            throw new RuntimeException("Brak refresh tokena — użytkownik nie jest zalogowany.");
+            throw new RuntimeException("User is not logged in");
         }
 
         String body = "grant_type=refresh_token" +
@@ -60,12 +58,12 @@ public class SpotifyService {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() != 200) {
-            log.error("Błąd odświeżania tokena Spotify: " + response.body());
+            log.error("Spotify refresh errror: " + response.body());
 
             if (response.body().contains("invalid_grant")) {
-                throw new RuntimeException("Refresh token nieważny — konieczne ponowne logowanie.");
+                throw new RuntimeException("Token Expired");
             }
-            throw new RuntimeException("Nie udało się odświeżyć tokena Spotify.");
+            throw new RuntimeException("Unable to refresh token.");
         }
 
         ObjectMapper mapper = new ObjectMapper();
@@ -73,7 +71,6 @@ public class SpotifyService {
 
         String newAccessToken = (String) map.get("access_token");
 
-        log.info("Pomyślnie odświeżono access token Spotify");
         return newAccessToken;
     }
 
