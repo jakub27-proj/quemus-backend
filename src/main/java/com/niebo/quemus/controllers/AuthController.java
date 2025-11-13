@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 
 
+
 @RequestMapping("/api/auth")
 @RestController
 @Tag(name="Auth Controller", description = "Login to spotify Account")
@@ -42,6 +43,7 @@ public class AuthController {
         return ResponseEntity.ok(Map.of("loggedIn", loggedIn));
     }
     
+    @GetMapping("/token")
     public ResponseEntity<Map<String, String>> getToken(
         @CookieValue(value = "spotify_access_token", required = false) String accessToken,
         @CookieValue(value = "spotify_refresh_token", required = false) String refreshToken)
