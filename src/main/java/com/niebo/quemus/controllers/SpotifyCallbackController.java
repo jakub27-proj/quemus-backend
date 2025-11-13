@@ -46,16 +46,16 @@ public class SpotifyCallbackController {
     @GetMapping("/callback")
     public ResponseEntity<Void> callback(@RequestParam("code") String code) throws IOException, InterruptedException {
         var body = "grant_type=authorization_code" +
-                "&code=" + code +
-                "&redirect_uri=" + redirectUri +
-                "&client_id=" + clientId +
-                "&client_secret=" + clientSecret;
+            "&code=" + code +
+            "&redirect_uri=" + redirectUri +
+            "&client_id=" + clientId +
+            "&client_secret=" + clientSecret;
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://accounts.spotify.com/api/token"))
-                .header("Content-Type", "application/x-www-form-urlencoded")
-                .POST(HttpRequest.BodyPublishers.ofString(body))
-                .build();
+            .uri(URI.create("https://accounts.spotify.com/api/token"))
+            .header("Content-Type", "application/x-www-form-urlencoded")
+            .POST(HttpRequest.BodyPublishers.ofString(body))
+            .build();
 
         var client = HttpClient.newHttpClient();
         var tokenResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -93,6 +93,5 @@ public class SpotifyCallbackController {
             .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
             .location(URI.create(frontendUrl))
             .build();
-        }
-        //TODO:"Odświeżanie tokena"
+    }
 }
