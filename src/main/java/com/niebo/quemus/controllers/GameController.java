@@ -9,6 +9,9 @@ import com.niebo.quemus.services.GameService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -35,6 +38,11 @@ public class GameController {
         return gameService.joinGame(game_ID, name);
     }
 
+    @DeleteMapping("/remove/player")
+    public void removePlayer(@RequestParam(name = "game_ID") long game_ID, @RequestParam(name = "name") String name) {
+        gameService.removePlayer(game_ID, name);
+    }
+    
     @GetMapping("/start")
     public Game startGame(@RequestParam(name = "game_ID") long game_ID){
         return gameService.startGame(game_ID);

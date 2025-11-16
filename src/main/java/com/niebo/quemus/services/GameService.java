@@ -66,6 +66,21 @@ public class GameService {
         return currentGame;
     }
 
+    public void removePlayer(long game_ID, String name){
+        Game currentGame = activeGames.get(game_ID);
+        for (Player player: currentGame.getPlayers()){
+            if(player.getName().equals(name)){
+                currentGame.getPlayers().remove(player);
+                break;
+            } 
+        }
+        if (currentGame.getPlayers().isEmpty()) deleteGame(game_ID);
+        else {
+            notificationController.sendMessage(new Notification(NotificationType.REFRESH, ""),
+            currentGame.getGame_ID());
+        }
+    }
+
     public Game setPlaylist(long game_ID, String playlist_ID, String accessToken){
         Game currentGame = activeGames.get(game_ID);
         currentGame.setPlaylist(webClient.get().uri("/playlists/" + playlist_ID).header("Authorization", "Bearer " + accessToken)
