@@ -8,9 +8,6 @@ import com.niebo.quemus.services.GameService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 
@@ -29,8 +26,8 @@ public class GameController {
 
     @PostMapping("/create")
     public Game createGame(@RequestParam(name = "isOnline") boolean isOnline, 
-    @RequestParam(name = "turns") int turns){
-        return gameService.createNewGame(isOnline, turns);
+    @RequestParam(name = "turns") int turns, @CookieValue(value = "spotify_access_token", required = false) String accessToken){
+        return gameService.createNewGame(isOnline, turns, accessToken);
     }
 
     @GetMapping("/join")

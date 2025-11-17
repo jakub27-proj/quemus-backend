@@ -34,10 +34,10 @@ public class AuthController {
                 .build();
     }
     @GetMapping("/session")
-    public ResponseEntity<Map<String, Boolean>> getSpotifySession(@CookieValue(value = "spotify_access_token", required = false) String accessToken) {
+    public Map<String, Boolean> getSpotifySession(@CookieValue(value = "spotify_access_token", required = false) String accessToken) {
         boolean loggedIn = accessToken != null;
         log.info("Logged in: " + loggedIn);
-        return ResponseEntity.ok(Map.of("loggedIn", loggedIn));
+        return Map.of("loggedIn", loggedIn);
     }
     
     @GetMapping("/token")

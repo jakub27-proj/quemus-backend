@@ -6,12 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.niebo.quemus.controllers.AuthController;
 import com.niebo.quemus.controllers.NotificationController;
 import com.niebo.quemus.models.game.Notification;
 import com.niebo.quemus.models.game.NotificationType;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.niebo.quemus.models.game.Game;
@@ -33,12 +35,16 @@ public class GameService {
     private WebClient webClient;
     @Autowired
     private NotificationController notificationController;
+    @Autowired
+    private AuthController authController;
 
     public Game getGameById(long game_ID){
         return activeGames.get(game_ID);
     }
 
-    public Game createNewGame(boolean isOnline, int turnsLeft){
+    public Game createNewGame(boolean isOnline, int turnsLeft, 
+    @CookieValue(value = "spotify_access_token", required = false) String accessToken){
+        if(!authController.getSpotifySession(accessToken).get("loggedIn")) return null;
         Game game = new Game(isOnline, gameID.get(), turnsLeft);
         log.info(game.toString());
         activeGames.put(gameID.getAndAdd(1), game);
