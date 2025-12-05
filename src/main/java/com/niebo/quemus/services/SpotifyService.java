@@ -69,9 +69,7 @@ public class SpotifyService {
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> map = mapper.readValue(response.body(), new TypeReference<>() {});
 
-        String newAccessToken = (String) map.get("access_token");
-
-        return newAccessToken;
+        return (String) map.get("access_token");
     }
 
     public String buildUriAuthorize(){

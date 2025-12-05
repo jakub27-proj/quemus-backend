@@ -80,8 +80,7 @@ public class Game {
     public void newCurrentSong(){
          List<PlaylistTrackObject> listOfSongs = this.playlist.getTracks().getItems();
         if (listOfSongs.isEmpty()) return;
-        PlaylistTrackObject playlistTrackObject = listOfSongs.remove(random.nextInt(listOfSongs.size()));
-        this.currentSong = playlistTrackObject;
+        this.currentSong = listOfSongs.remove(random.nextInt(listOfSongs.size()));
     }
 
     public Player findPlayerByID(long player_ID){

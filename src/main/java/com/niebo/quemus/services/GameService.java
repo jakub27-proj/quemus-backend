@@ -115,7 +115,7 @@ public class GameService {
         currentGame.setCurrentPlayersTurn();
         currentGame.setTurnsLeft(currentGame.getTurnsLeft() * currentGame.getPlayers().size());
         if(currentGame.getPlaylist().getTracks().getItems().size() < currentGame.getTurnsLeft()){
-            currentGame.setTurnsLeft((int) (currentGame.getPlaylist().getTracks().getItems().size()));
+            currentGame.setTurnsLeft(currentGame.getPlaylist().getTracks().getItems().size());
         }
         currentGame.startGame();
         currentGame.setFirstSongForPlayers();
@@ -184,8 +184,7 @@ public class GameService {
     public boolean useToken(long game_ID, long player_ID) {
         Game currentGame = activeGames.get(game_ID);
         Player player = currentGame.findPlayerByID(player_ID);
-        boolean ans = player.deleteSpecialToken();
-        return ans;
+        return player.deleteSpecialToken();
     }
 
     public Game resetPlaylist(long game_ID){
