@@ -1,9 +1,9 @@
 package com.niebo.quemus.services;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.niebo.quemus.controllers.AuthController;
@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class GameService {
-    private final Map<Long, Game> activeGames = new HashMap<>();
+    private final Map<Long, Game> activeGames = new ConcurrentHashMap<>();
     private static final AtomicLong gameID = new AtomicLong(0);
     private static final AtomicLong playerID = new AtomicLong(0);
     @Autowired

@@ -35,7 +35,7 @@ public class Game {
     @JsonIgnore
     private Random random = new Random();
     @JsonIgnore
-    private int winCondition = 2;
+    private int winCondition = 9;
     
     public Game(boolean isOnline, long game_ID, int turnsLeft){
         this.turnsLeft = turnsLeft;
