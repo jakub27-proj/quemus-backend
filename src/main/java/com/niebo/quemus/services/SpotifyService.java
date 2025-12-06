@@ -10,8 +10,11 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.niebo.quemus.models.exceptions.SpotifyWebApiException;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -63,7 +66,7 @@ public class SpotifyService {
             if (response.body().contains("invalid_grant")) {
                 throw new RuntimeException("Token Expired");
             }
-            throw new RuntimeException("Unable to refresh token.");
+            throw new SpotifyWebApiException("Unable to refresh token.");
         }
 
         ObjectMapper mapper = new ObjectMapper();

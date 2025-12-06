@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.niebo.quemus.models.exceptions.SpotifyWebApiException;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -61,7 +62,7 @@ public class SpotifyCallbackController {
         var tokenResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
         
         if (tokenResponse.statusCode() != 200) {
-            throw new RuntimeException("Błąd pobierania tokena Spotify: " + tokenResponse.body());
+            throw new SpotifyWebApiException("Spotify token error: " + tokenResponse.body());
         }
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> map = mapper.readValue(
@@ -70,7 +71,6 @@ public class SpotifyCallbackController {
         );
         String accessToken = (String) map.get("access_token");
         String refreshToken = (String) map.get("refresh_token");
-        log.info("Otrzymano tokeny");
 
         ResponseCookie accessCookie = ResponseCookie.from("spotify_access_token", accessToken)
         .httpOnly(true)
