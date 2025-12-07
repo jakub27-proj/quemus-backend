@@ -41,8 +41,8 @@ public class GameController {
     }
     
     @GetMapping("/start")
-    public Game startGame(@RequestParam(name = "game_ID") long game_ID){
-        return gameService.startGame(game_ID);
+    public Game startGame(@RequestParam(name = "game_ID") long game_ID, @RequestParam(name = "points") int points){
+        return gameService.startGame(game_ID, points);
     }
 
     @PostMapping("/setplaylist")

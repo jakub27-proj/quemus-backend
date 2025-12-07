@@ -109,7 +109,7 @@ public class GameService {
         return currentGame;
     }
     
-    public Game startGame(long game_ID){
+    public Game startGame(long game_ID, int points){
         Game currentGame = activeGames.get(game_ID);
         log.info("Game has started: " + game_ID);
         currentGame.setCurrentPlayersTurn();
@@ -117,6 +117,7 @@ public class GameService {
         if(currentGame.getPlaylist().getTracks().getItems().size() < currentGame.getTurnsLeft()){
             currentGame.setTurnsLeft(currentGame.getPlaylist().getTracks().getItems().size());
         }
+        currentGame.setWinCondition(points);
         currentGame.startGame();
         currentGame.setFirstSongForPlayers();
         currentGame.newCurrentSong();
