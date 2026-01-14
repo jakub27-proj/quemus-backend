@@ -6,18 +6,17 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.niebo.quemus.controllers.AuthController;
-import com.niebo.quemus.controllers.NotificationController;
-import com.niebo.quemus.models.game.Notification;
-import com.niebo.quemus.models.game.NotificationType;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.niebo.quemus.controllers.AuthController;
+import com.niebo.quemus.controllers.NotificationController;
 import com.niebo.quemus.models.game.Game;
 import com.niebo.quemus.models.game.GameAction;
+import com.niebo.quemus.models.game.Notification;
+import com.niebo.quemus.models.game.NotificationType;
 import com.niebo.quemus.models.game.Player;
 import com.niebo.quemus.models.spotify.Playlist;
 import com.niebo.quemus.models.spotify.PlaylistTrackObject;
@@ -117,7 +116,7 @@ public class GameService {
         if(currentGame.getPlaylist().getTracks().getItems().size() < currentGame.getTurnsLeft()){
             currentGame.setTurnsLeft(currentGame.getPlaylist().getTracks().getItems().size());
         }
-        currentGame.setWinCondition(points);
+        currentGame.setWinCondition(points - 1);
         currentGame.startGame();
         currentGame.setFirstSongForPlayers();
         currentGame.newCurrentSong();
