@@ -54,8 +54,10 @@ public class GameService {
         Game game = activeGames.get(game_ID);
         game.setOnline(!game.isOnline());
         if(!game.isOnline()){
-            this.notificationController.sendMessage(new Notification(NotificationType.KICK, null), game_ID);
+            this.notificationController.sendMessage(new Notification(NotificationType.KICK, game.getHost_device_ID()), game_ID);
+            game.removeAllForeignPlayers();
         }
+        this.notificationController.sendMessage(new Notification(NotificationType.REFRESH, null), game_ID);
     }
 
     public Game joinGame(long game_ID, String name, String device_ID){
@@ -240,6 +242,8 @@ public class GameService {
 
     public void deleteGame(long game_ID){
         log.info("Deleting game: " + game_ID);
+        Game game = this.activeGames.get(game_ID);
+        if(!game.isHasStarted()) this.notificationController.sendMessage(new Notification(NotificationType.KICK, game.getHost_device_ID()), game_ID);
         this.activeGames.remove(game_ID);
     }
 }
