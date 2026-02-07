@@ -42,9 +42,9 @@ public class GameService {
     }
 
     public Game createNewGame(boolean isOnline, int turnsLeft, 
-    @CookieValue(value = "spotify_access_token", required = false) String accessToken){
+    @CookieValue(value = "spotify_access_token", required = false) String accessToken, String device_ID){
         if(!authController.getSpotifySession(accessToken).get("loggedIn")) return null;
-        Game game = new Game(isOnline, gameID.get(), turnsLeft);
+        Game game = new Game(isOnline, gameID.get(), turnsLeft, device_ID);
         log.info(game.toString());
         activeGames.put(gameID.getAndAdd(1), game);
         return game;
@@ -52,18 +52,19 @@ public class GameService {
 
     public void setOnline(long game_ID){
         Game game = activeGames.get(game_ID);
-        game.setOnline(true);
-        notificationController.sendMessage(new Notification(NotificationType.REFRESH, ""), game_ID);
+        game.setOnline(!game.isOnline());
+        if(!game.isOnline()){
+            this.notificationController.sendMessage(new Notification(NotificationType.KICK, null), game_ID);
+        }
     }
 
-    public Game joinGame(long game_ID, String name){
+    public Game joinGame(long game_ID, String name, String device_ID){
         Game currentGame = activeGames.get(game_ID);
         if (!currentGame.isCanJoin()){
             return null;
         }
-        log.info("Player: " + name);
         long id = playerID.getAndAdd(1);
-        currentGame.addPlayer(id, name);
+        currentGame.addPlayer(id, name, device_ID);
         if (currentGame.isOnline()){
             notificationController.sendMessage(new Notification(NotificationType.REFRESH, String.valueOf(id)),
              currentGame.getGame_ID());
@@ -79,7 +80,7 @@ public class GameService {
                 break;
             } 
         }
-        if (currentGame.getPlayers().isEmpty()) deleteGame(game_ID);
+        if (currentGame.getPlayers().isEmpty() && currentGame.isHasStarted()) deleteGame(game_ID);
         else {
             notificationController.sendMessage(new Notification(NotificationType.REFRESH, ""),
             currentGame.getGame_ID());

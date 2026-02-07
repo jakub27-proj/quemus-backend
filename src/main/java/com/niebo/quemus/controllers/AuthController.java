@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.niebo.quemus.services.DeviceIDService;
 import com.niebo.quemus.services.SpotifyService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,6 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthController {
     @Autowired
     private SpotifyService spotifyService;
+    @Autowired 
+    private DeviceIDService deviceIDService;
 
     @GetMapping("/login")
     public ResponseEntity<Void> login() {
@@ -69,4 +72,8 @@ public class AuthController {
             .body(Map.of("access_token", accessToken));
     }
 
+    @GetMapping("/device")
+    public String getDeviceID() {
+        return deviceIDService.generateDeviceID();
+    }
 }

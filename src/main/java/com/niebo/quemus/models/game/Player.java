@@ -18,15 +18,17 @@ import lombok.Setter;
 @Schema(description= "Model which represents player of the game")
 public class Player {
     private long id;
+    private String device_ID;
     private String name;
     private int points = 0;
     private List<PlaylistTrackObject> songsList = new ArrayList<>();
     private int specialTokens = 2;
     private boolean hasTurn = false;
 
-    public Player(long id, String name){
+    public Player(long id, String name, String deviceID){
         this.id = id;
         this.name = name;
+        this.device_ID = deviceID;
     }
     public void addSpecialToken(){
         specialTokens++;

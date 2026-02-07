@@ -1,7 +1,15 @@
 package com.niebo.quemus.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.niebo.quemus.models.game.Game;
 import com.niebo.quemus.services.GameService;
@@ -26,13 +34,15 @@ public class GameController {
 
     @PostMapping("/create")
     public Game createGame(@RequestParam(name = "isOnline") boolean isOnline, 
-    @RequestParam(name = "turns") int turns, @CookieValue(value = "spotify_access_token", required = false) String accessToken){
-        return gameService.createNewGame(isOnline, turns, accessToken);
+    @RequestParam(name = "turns") int turns, 
+    @RequestParam(name="deviceId") String device_ID,
+    @CookieValue(value = "spotify_access_token", required = false) String accessToken){
+        return gameService.createNewGame(isOnline, turns, accessToken, device_ID);
     }
 
     @GetMapping("/join")
-    public Game joinGame(@RequestParam(name = "game_ID") long game_ID, @RequestParam(name = "name") String name){
-        return gameService.joinGame(game_ID, name);
+    public Game joinGame(@RequestParam(name = "game_ID") long game_ID, @RequestParam(name = "name") String name, @RequestParam(name="deviceId") String device_ID){
+        return gameService.joinGame(game_ID, name, device_ID);
     }
 
     @DeleteMapping("/remove/player")

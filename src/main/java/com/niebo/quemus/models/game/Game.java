@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Schema(description= "Model which represents game instance")
 public class Game {
     private long game_ID;
+    private String host_device_ID;
     private List<Player> players = new ArrayList<>();
     private List<GameAction> actions = new ArrayList<>();
     private int turnsLeft;
@@ -36,15 +37,21 @@ public class Game {
     private Random random = new Random();
     @JsonIgnore
     private int winCondition = 9;
+
+    private final static int MAX_PLAYERS = 8;
     
-    public Game(boolean isOnline, long game_ID, int turnsLeft){
+    public Game(boolean isOnline, long game_ID, int turnsLeft, String host_device_ID){
         this.turnsLeft = turnsLeft;
         this.game_ID = game_ID;
         this.isOnline = isOnline;
+        this.host_device_ID = host_device_ID;
     }
 
-    public void addPlayer(long id, String name){
-        this.players.add(new Player(id, name));
+    public void addPlayer(long id, String name, String device_ID){
+        this.players.add(new Player(id, name, device_ID));
+        if(this.players.size() >= MAX_PLAYERS){
+            this.canJoin = false;
+        }
     }
     
     public void startGame(){

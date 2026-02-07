@@ -6,5 +6,6 @@ public enum NotificationType {
     END,
     START,
     LOCKED_BY_PLAYER,
-    UNLOCKED_BY_PLAYER
+    UNLOCKED_BY_PLAYER,
+    KICK
 }
