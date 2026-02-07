@@ -3,6 +3,7 @@ package com.niebo.quemus.services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -37,10 +38,14 @@ public class GameService {
     @Autowired
     private AuthController authController;
 
-    public Game getGameById(long game_ID){
-        return activeGames.get(game_ID);
-    }
 
+    public Game getGameById(long game_ID) {
+        Game game = activeGames.get(game_ID);
+        if (game == null) {
+        throw new NoSuchElementException();
+        }
+        return game;
+    }
     public Game createNewGame(boolean isOnline, int turnsLeft, 
     @CookieValue(value = "spotify_access_token", required = false) String accessToken, String device_ID){
         if(!authController.getSpotifySession(accessToken).get("loggedIn")) return null;

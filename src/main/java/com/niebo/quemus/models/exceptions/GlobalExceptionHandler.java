@@ -1,4 +1,4 @@
-package com.niebo.quemus.controllers;
+package com.niebo.quemus.models.exceptions;
 
 import java.util.NoSuchElementException;
 
@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.niebo.quemus.models.ErrorResponse;
-import com.niebo.quemus.models.exceptions.SpotifyWebApiException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
