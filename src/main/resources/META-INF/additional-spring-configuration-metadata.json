@@ -18,5 +18,10 @@
     "name": "frontend_url",
     "type": "java.lang.String",
     "description": "url of the frontend app"
+  },
+  {
+    "name": "timeout.cleanup.time",
+    "type": "java.lang.Long",
+    "description": "A description for 'timeout.cleanup.time'"
   }
 ]}

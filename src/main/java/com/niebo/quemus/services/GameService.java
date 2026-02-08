@@ -2,18 +2,19 @@ package com.niebo.quemus.services;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.niebo.quemus.controllers.AuthController;
 import com.niebo.quemus.controllers.NotificationController;
+import com.niebo.quemus.models.dataStructures.TrackingActivityMap;
 import com.niebo.quemus.models.game.Game;
 import com.niebo.quemus.models.game.GameAction;
 import com.niebo.quemus.models.game.Notification;
@@ -28,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class GameService {
-    private final Map<Long, Game> activeGames = new ConcurrentHashMap<>();
+    private final TrackingActivityMap<Long, Game> activeGames = new TrackingActivityMap<>();
     private static final AtomicLong gameID = new AtomicLong(0);
     private static final AtomicLong playerID = new AtomicLong(0);
     @Autowired
@@ -37,6 +38,8 @@ public class GameService {
     private NotificationController notificationController;
     @Autowired
     private AuthController authController;
+    @Value("${timeout.cleanup.time}")
+    private static  long timeout_ms;
 
 
     public Game getGameById(long game_ID) {
@@ -250,5 +253,15 @@ public class GameService {
         Game game = this.activeGames.get(game_ID);
         if(!game.isHasStarted()) this.notificationController.sendMessage(new Notification(NotificationType.KICK, game.getHost_device_ID()), game_ID);
         this.activeGames.remove(game_ID);
+    }
+
+    @Scheduled(fixedDelay = 900_000)
+    public void cleanupInactiveSessions() {
+        long cutoff = System.currentTimeMillis() - timeout_ms;
+
+        for (Long key : activeGames.inactiveSince(cutoff)) {
+            log.info("Scheduler removed game with ID {}", key);
+            activeGames.remove(key);
+        }
     }
 }

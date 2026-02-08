@@ -56,7 +56,7 @@ public class Game {
 
     public void removeAllForeignPlayers(){
         for(Player player: players){
-            if(this.host_device_ID != player.getDevice_ID()) {
+            if(!this.host_device_ID.equals(player.getDevice_ID())) {
                 this.players.remove(player);
             }
         }
