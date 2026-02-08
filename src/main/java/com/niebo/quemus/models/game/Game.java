@@ -54,12 +54,8 @@ public class Game {
         }
     }
 
-    public void removeAllForeignPlayers(){
-        for(Player player: players){
-            if(!this.host_device_ID.equals(player.getDevice_ID())) {
-                this.players.remove(player);
-            }
-        }
+    public void removeAllForeignPlayers() {
+        players.removeIf(p -> !host_device_ID.equals(p.getDevice_ID()));
     }
     
     public void startGame(){

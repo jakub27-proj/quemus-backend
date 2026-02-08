@@ -39,7 +39,7 @@ public class GameService {
     @Autowired
     private AuthController authController;
     @Value("${timeout.cleanup.time}")
-    private static  long timeout_ms;
+    private long timeout_ms;
 
 
     public Game getGameById(long game_ID) {
@@ -255,7 +255,7 @@ public class GameService {
         this.activeGames.remove(game_ID);
     }
 
-    @Scheduled(fixedDelay = 900_000)
+    @Scheduled(fixedDelay = 300_000)
     public void cleanupInactiveSessions() {
         long cutoff = System.currentTimeMillis() - timeout_ms;
 

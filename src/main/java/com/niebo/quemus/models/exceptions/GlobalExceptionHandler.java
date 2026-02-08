@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.niebo.quemus.models.ErrorResponse;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFound(NoSuchElementException ex) {
@@ -54,6 +57,7 @@ public class GlobalExceptionHandler {
             HttpStatus.INTERNAL_SERVER_ERROR.value(),
             "Server error"
         );
+        log.error(ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
