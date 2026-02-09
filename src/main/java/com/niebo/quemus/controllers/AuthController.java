@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.niebo.quemus.services.DeviceIDService;
+import com.niebo.quemus.services.IDService;
 import com.niebo.quemus.services.SpotifyService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,7 +28,7 @@ public class AuthController {
     @Autowired
     private SpotifyService spotifyService;
     @Autowired 
-    private DeviceIDService deviceIDService;
+    private IDService deviceIDService;
 
     @GetMapping("/login")
     public ResponseEntity<Void> login() {

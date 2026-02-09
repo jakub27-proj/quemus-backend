@@ -30,8 +30,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GameService {
     private final TrackingActivityMap<Long, Game> activeGames = new TrackingActivityMap<>();
-    private static final AtomicLong gameID = new AtomicLong(0);
     private static final AtomicLong playerID = new AtomicLong(0);
+    @Autowired
+    private IDService idService;
     @Autowired
     private WebClient webClient;
     @Autowired
@@ -52,9 +53,13 @@ public class GameService {
     public Game createNewGame(boolean isOnline, int turnsLeft, 
     @CookieValue(value = "spotify_access_token", required = false) String accessToken, String device_ID){
         if(!authController.getSpotifySession(accessToken).get("loggedIn")) return null;
-        Game game = new Game(isOnline, gameID.get(), turnsLeft, device_ID);
+        long id = 0;
+        do { 
+            id = idService.generateGameID();
+        } while (activeGames.hasKey(id));
+        Game game = new Game(isOnline, id, turnsLeft, device_ID);
         log.info(game.toString());
-        activeGames.put(gameID.getAndAdd(1), game);
+        activeGames.put(id, game);
         return game;
     }
 

@@ -34,5 +34,9 @@ public class TrackingActivityMap<K, V> {
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toSet());
     }
+
+    public boolean hasKey(K key){
+        return map.containsKey(key);
+    }
 }
 
